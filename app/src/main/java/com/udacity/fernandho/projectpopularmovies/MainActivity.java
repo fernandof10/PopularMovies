@@ -5,7 +5,9 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             pDialog.setCancelable(false);
             pDialog.show();
         }
-        
+
         @Override
         protected Void doInBackground(Void... parameters) {
             HttpConnection sh = new HttpConnection();
@@ -124,6 +126,24 @@ public class MainActivity extends AppCompatActivity {
             }
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            // Dismiss the progress dialog
+            if (pDialog.isShowing())
+                pDialog.dismiss();
+            /**
+             * Updating parsed JSON data into ListView
+             * */
+            ListAdapter adapter = new SimpleAdapter(
+                    MainActivity.this, MoviesList,
+                    R.layout.list_item, new String[]{"title", "popularity",
+                    "id","poster_path"}, new int[]{R.id.title,
+                    R.id.popularity, R.id.id, R.id.poster_path});
+
+            lv.setAdapter(adapter);
         }
     }
 }
