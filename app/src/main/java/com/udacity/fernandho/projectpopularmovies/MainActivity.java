@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     // URL to get contacts JSON
     private static String urlPopular = "https://api.themoviedb.org/3/movie/popular?api_key=XXX&language=en-US&page=1";
     private static String urlTopRated = "https://api.themoviedb.org/3/movie/top_rated?api_key=XXX&language=en-US&page=1";
+    private String urlToSearch = urlTopRated;
     ArrayList<HashMap<String, String>> MoviesList;
 
     @Override
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             HttpConnection sh = new HttpConnection();
 
             // Making a request to url and getting response
-            String jsonStr = sh.makeServiceCall(urlTopRated);
+            String jsonStr = sh.makeServiceCall(urlToSearch);
 
             Log.e(TAG, "Response from url: " + jsonStr);
 
@@ -153,6 +155,29 @@ public class MainActivity extends AppCompatActivity {
                     R.id.popularity, R.id.id, R.id.poster_path});
 
             lv.setAdapter(adapter);
+        }
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.menuSortPop:
+                urlToSearch = urlPopular;
+                //Toast.makeText(MainActivity.this, urlToSearch, Toast.LENGTH_SHORT).show();
+                MoviesList.clear();
+                new GetMovies().execute();
+                return true;
+            case R.id.menuSortTop:
+                urlToSearch = urlTopRated;
+                //Toast.makeText(MainActivity.this, urlToSearch, Toast.LENGTH_SHORT).show();
+                MoviesList.clear();
+                new GetMovies().execute();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }
